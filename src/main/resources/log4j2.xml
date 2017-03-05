@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="trace" strict="true" name="XMLConfigTest"
+               packages="org.apache.logging.log4j.test">
+
+    <Properties>
+        <Property name="filename">../logs/glessitMail.log</Property>
+    </Properties>
+
+    <Appenders>
+        <Appender type="Console" name="STDOUT">
+            <Layout type="PatternLayout" pattern="%m MDC%X%n"/>
+        </Appender>
+        <Appender type="File" name="File" fileName="${filename}">
+            <Layout type="PatternLayout">
+                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </Layout>
+        </Appender>
+    </Appenders>
+
+    <Loggers>
+        <!--<Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">-->
+            <!--<Filter type="ThreadContextMapFilter">-->
+                <!--<KeyValuePair key="test" value="123"/>-->
+            <!--</Filter>-->
+            <!--<AppenderRef ref="STDOUT"/>-->
+        <!--</Logger>-->
+
+        <Logger name="com.glessit.microservice.mail" level="debug" additivity="false">
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Root level="debug">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

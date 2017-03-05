@@ -7,6 +7,9 @@
     <groupId>com.glessit.microservice.mail</groupId>
     <artifactId>GlessitMail</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>GlessitMail</name>
+    <url>https://github.com/Glessit/Glessit.Microservice.Mail</url>
 
     <properties>
         <jacksonVersion>2.8.7</jacksonVersion>
@@ -16,6 +19,27 @@
 
     <!--<dependencyManagement>-->
         <dependencies>
+
+            <!--log4j2-->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>2.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.8</version>
+            </dependency>
+
+            <!--log4j2 / slf4j bridge-->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.8</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>javax.mail-api</artifactId>
@@ -67,13 +91,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>(whatever version is current)</version>
+                <version>3.6.1</version>
                 <configuration>
-                    <!-- or whatever version you use -->
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
         </plugins>
+
     </build>
 </project>

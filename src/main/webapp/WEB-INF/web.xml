@@ -7,6 +7,12 @@
     <servlet>
         <servlet-name>GlessitMailServlet</servlet-name>
         <servlet-class>com.glessit.microservice.mail.GlessitMailServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <!--Access token-->
+            <param-name>access-token</param-name>
+            <param-value>cRNzdrbRnjDdYCzf4s</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>
