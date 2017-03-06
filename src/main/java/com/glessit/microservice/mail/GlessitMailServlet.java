@@ -1,6 +1,11 @@
 package com.glessit.microservice.mail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glessit.microservice.mail.exception.ExceptionUtil;
+import com.glessit.microservice.mail.exception.GlessitMailException;
 import com.glessit.microservice.mail.service.IGlessitMailBuilder;
+import com.glessit.microservice.mail.service.ISender;
+import com.glessit.microservice.mail.service.MailSenderFactory;
 import com.glessit.microservice.mail.utils.LogUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -29,16 +34,7 @@ import static com.glessit.microservice.mail.utils.LogUtil.LogItem;
 public class GlessitMailServlet extends HttpServlet {
 
     private final static Logger LOG = LoggerFactory.getLogger(GlessitMailServlet.class);
-
-    private final IGlessitMailBuilder glessitMailBuilder;
-
-    // should we execute by servlet-container
-    public GlessitMailServlet() {
-        /*glessitMailBuilder = new GlessitMailBuilder()
-                .add()
-        ;*/
-        glessitMailBuilder = null;
-    }
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -55,41 +51,19 @@ public class GlessitMailServlet extends HttpServlet {
 
         loggerConsumer.accept(new LogItem("Start reading request ..",  Level.DEBUG), LOG);
 
-        /* extract params. from request */
+        /* resolve type of email */
+        MailType mailType = MailType.valueOf(request.getParameter("mail_type"));
+        if (mailType == null) {
+            ExceptionUtil.raise("Parametr mail_type is null!");
+        }
 
-        // represent mail type for sending, i.e SimpleMail, HTMLMail, ImageMail and so on
-//        Optional<String> mailType = Optional
-//                .ofNullable(request.getParameter("mail_type"))
-//                .orElseThrow((Supplier<Throwable>) () -> new ServletException("Parameter mail_type is null!"));
-//        Optional<String> accessToken = Optional.ofNullable(request.getParameter("access_token"));
+        /* get sender component */
+        ISender sender = MailSenderFactory.getSender(mailType);
+        Object senderResult = sender.send();
 
-//        loggerConsumer.accept(
-//                new LogItem(
-//                        format("MailType is [%s]. AccessToken is [%s]", mailType.get(), accessToken.get()),
-//                        Level.DEBUG
-//                ),
-//                LOG
-//        );
-
-        /* Build sender by params. */
-
-
-
-
-
-
-
-       /* switch (MailType.valueOf()) {
-            case SIMPLE_MAIL:
-//                debugLogConsumer.accept("Start sending simple mail ..");
-                break;
-            default:
-//                debugLogConsumer.accept("");
-
-        }*/
-
-        IOUtils.toString(
-                request.getReader()
+        IOUtils.write(
+                objectMapper.writeValueAsString(senderResult),
+                response.getWriter()
         );
     }
 }
