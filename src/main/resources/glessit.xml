@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Glessit>
+    <Mail>
+        <Accounts>
+            <Account type="GMAIL">
+                <Username>your@gmail.com</Username>
+                <Password>passwd</Password>
+            </Account>
+        </Accounts>
+    </Mail>
+    <Test>testEl</Test>
+</Glessit>

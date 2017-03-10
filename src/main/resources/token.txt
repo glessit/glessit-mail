@@ -1,1 +1,1 @@
-simple_secret_token
+put your token here for override default

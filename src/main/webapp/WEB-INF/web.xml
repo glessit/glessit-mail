@@ -34,6 +34,12 @@
     </servlet-mapping>
 
 
+    <listener>
+        <listener-class>
+            com.glessit.microservice.mail.servlet.listener.GlessitServletContextListener
+        </listener-class>
+    </listener>
+
 
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>

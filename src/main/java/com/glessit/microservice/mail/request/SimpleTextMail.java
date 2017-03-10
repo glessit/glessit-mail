@@ -13,5 +13,4 @@ public class SimpleTextMail {
     private String subject;
     private String body;
     private String to;
-    private String from;
 }
