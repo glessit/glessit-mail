@@ -7,21 +7,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.xml.bind.annotation.*;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Account {
 
     @XmlAttribute(name = "type", required = true )
     private AvailableAccountType accountType;
 
-    @XmlElement(name = "username", required = true)
+    @XmlElement(name = "Username", required = true)
     private String username;
 
-    @XmlElement(name = "password", required = true)
+    @XmlElement(name = "Password", required = true)
     private String password;
+
+    @XmlElement(name = "From", required = true)
+    private String from;
+
+    @XmlElementWrapper(name="Properties")
+    @XmlElement(name="Property")
+    private List<Property> properties;
 }

@@ -20,7 +20,4 @@ public class Glessit {
 
     @XmlElement(name = "Mail")
     private Mail mail;
-
-    @XmlElement(name = "Test")
-    private String test;
 }

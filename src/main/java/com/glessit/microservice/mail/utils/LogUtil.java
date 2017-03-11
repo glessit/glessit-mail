@@ -21,7 +21,7 @@ public class LogUtil {
         private Level level;
     }
 
-    public final static BiConsumer<LogItem, Logger> loggerConsumer = (logItem, logger) -> {
+    public final static BiConsumer<LogItem, Logger> log = (logItem, logger) -> {
         if (logItem.getLevel().equals(Level.DEBUG)) {
             if (logger.isDebugEnabled()) {
                 logger.debug(logItem.getLog());

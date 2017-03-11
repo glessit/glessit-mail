@@ -2,11 +2,30 @@
 <Glessit>
     <Mail>
         <Accounts>
+            <!-- turn of for sending message from yours email: https://www.google.com/settings/security/lesssecureapps-->
             <Account type="GMAIL">
                 <Username>your@gmail.com</Username>
-                <Password>passwd</Password>
+                <Password>test</Password>
+                <From>your@gmail.com</From>
+                <Properties>
+                    <Property>
+                        <key>mail.smtp.auth</key>
+                        <value>true</value>
+                    </Property>
+                    <Property>
+                        <key>mail.smtp.starttls.enable</key>
+                        <value>true</value>
+                    </Property>
+                    <Property>
+                        <key>mail.smtp.host</key>
+                        <value>smtp.gmail.com</value>
+                    </Property>
+                    <Property>
+                        <key>mail.smtp.port</key>
+                        <value>587</value>
+                    </Property>
+                </Properties>
             </Account>
         </Accounts>
     </Mail>
-    <Test>testEl</Test>
 </Glessit>

@@ -1,80 +1,105 @@
 package com.glessit.microservice.mail.service;
 
 
-import com.glessit.microservice.mail.request.SenderResult;
+import com.glessit.microservice.mail.config.Account;
+import com.glessit.microservice.mail.model.IGlessitMessage;
+import com.glessit.microservice.mail.response.SenderResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.Properties;
+
+import static com.glessit.microservice.mail.utils.LogUtil.log;
+import static java.lang.String.format;
+import static com.glessit.microservice.mail.utils.LogUtil.LogItem;
+
 
 /**
  * Send simple text
  * No images, No HTML support.
  */
-public class SimpleMailSender implements ISender {
+public class SimpleMailSender extends BaseMailSender implements ISender {
 
-    @Override
-    public Map<String, String> extractParams(HttpServletRequest request) {
-        return null;
+    private final static Logger LOG = LoggerFactory.getLogger(SimpleMailSender.class);
+
+    // used account
+    private Account account;
+
+    public SimpleMailSender(Account account) {
+        this.account = account;
     }
 
     @Override
-    public SenderResult send() {
+    public SenderResult send(IGlessitMessage message) {
 
-        String to = "";//change accordingly
+        String to = message.getEmail();
+        String subject = message.getSubject();
+        String body = message.getBody();
 
-        // Sender's email ID needs to be mentioned
-        String from = "";//change accordingly
-        final String username = "";//change accordingly
-        final String password = "";//change accordingly
+        String from = account.getFrom();
 
-        // Assuming you are sending email through relay.jangosmtp.net
-        String host = "smtp.gmail.com";
+        /* init. mail settings */
 
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", "587");
+        Properties properties = new Properties();
+        account.getProperties().stream().forEach(property -> {
+            properties.put(property.getKey(), property.getValue());
+        });
 
-        // Get the Session object.
-        Session session = Session.getInstance(props,
+        // create session obj.
+        Session session = Session.getInstance(
+                properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
+                        return new PasswordAuthentication(account.getUsername(), account.getPassword());
                     }
-                });
+                }
+            );
 
+        // prepare mime message
+        Message mimeMessage = null;
         try {
-            // Create a default MimeMessage object.
-            Message message = new MimeMessage(session);
-
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
-
-            // Set To: header field of the header.
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(to));
-
-            // Set Subject: header field
-            message.setSubject("Testing Subject");
-
-            // Now set the actual message
-            message.setText("Hello, this is sample for to check send "
-                    + "email using JavaMailAPI ");
-
-            // Send message
-            Transport.send(message);
-
-            System.out.println("Sent message successfully....");
-
+            mimeMessage = prepareMimeMessage(
+                    session,
+                    from,
+                    to,
+                    subject,
+                    body
+            );
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            LOG.error("Can't prepare mime message", e);
+            throw new RuntimeException(e.getMessage());
         }
 
-        return null;
+        log.accept(
+                new LogItem(
+                        String.format("Sending message ..  \n Params: \n to: [%s], from: [%s] ", to, from),
+                        Level.INFO
+                ),
+                LOG
+        );
+
+        SenderResult result = new SenderResult();
+
+        try {
+            // send message
+            Transport.send(mimeMessage);
+
+            log.accept(
+                    new LogItem(
+                            "Message was send",
+                            Level.INFO
+                    ),
+                    LOG
+            );
+            result.setResult("OK");
+
+        } catch (MessagingException e) {
+            result.setResult(e.getMessage());
+            LOG.error("Can't send message", e);
+        }
+
+        return result;
     }
 }

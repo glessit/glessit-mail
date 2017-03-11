@@ -22,7 +22,7 @@ public class GlessitServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
 
-        if (true) {
+        if (!true) {
             // for stop application initialization
             throw new RuntimeException();
         }
@@ -61,8 +61,8 @@ public class GlessitServletContextListener implements ServletContextListener {
                 Glessit glessitConfiguration = null;
                 try {
                     glessitConfiguration = (Glessit) jaxbUnmarshaller.unmarshal(new File(glessitConfigurationURL));
+                    // if config broken throw new RuntimeException();
                     servletContextEvent.getServletContext().setAttribute("glessit", glessitConfiguration);
-                    System.out.println();
                 } catch (JAXBException e) {
                     LOG.error("Can't create Glessit configuration class", e);
                 }

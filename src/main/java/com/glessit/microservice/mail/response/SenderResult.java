@@ -1,4 +1,4 @@
-package com.glessit.microservice.mail.request;
+package com.glessit.microservice.mail.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
